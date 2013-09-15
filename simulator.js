@@ -24,7 +24,6 @@ TS.AIMap = Class.create(TS, {
 		this.size       = {width: this.container.getWidth(), height: this.container.getHeight()};
 
 		// load config
-    console.log(config_url);
 		new Ajax.Request( config_url, {method: 'get', onComplete: this.onConfigLoaded.bindAsEventListener(this)});
 	},
 
