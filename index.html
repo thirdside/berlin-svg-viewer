@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <script type="text/javascript" src="prototype.js"></script>
+        <script type="text/javascript" src="thirdside.js"></script>
+        <script type="text/javascript" src="drawable.js"></script>
+        <script type="text/javascript" src="animated.js"></script>
+        <script type="text/javascript" src="node.js"></script>
+        <script type="text/javascript" src="canvas.js"></script>
+        <script type="text/javascript" src="svg.js"></script>
+        <script type="text/javascript" src="player.js"></script>
+        <script type="text/javascript" src="playback_description.js"></script>
+        <script type="text/javascript" src="playback.js"></script>
+        <script type="text/javascript" src="simulator.js"></script>
+    </head>
+    <body>
+        <div id="progress_bar"></div>
+        <div id="map"></div>
+        <div id="controls">
+            <div id="rewind">Rewind</div>
+            <div id="back">Back</div>
+            <div id="play">Play</div>
+            <div id="pause">Pause</div>
+            <div id="next">Next</div>
+            <div id="end">End</div>
+        </div>
+        <div id="player_list"></div>
+        <div id="turns"></div>
+        <script type="text/javascript">
+            var containers = {
+              "map": "map",
+              "controls": "controls",
+              "player_list": "player-list",
+              "progress_bar": "progress_bar",
+              "turns": "turns"
+            },
+
+            map_path = "data/2.map",
+            game_path = "data/1";
+
+            document.observe("dom:loaded", function() {
+              new TS.AIPlayback(
+                containers,
+                map_path,
+                game_path
+              );
+            });
+        </script>
+    </body>
+</html>
