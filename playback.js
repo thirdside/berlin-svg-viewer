@@ -61,12 +61,12 @@ TS.Playback = Class.create(TS, {
 })
 
 TS.AIPlayback = Class.create(TS.Playback, {
-	initialize: function ($super, containers, map_url, history_url)
+	initialize: function ($super, containers, map_url, history_url, options)
 	{
 		$super(containers, map_url, history_url);
 
 		// create the visualizer
-		this.map = new TS.AIMap(containers.map, map_url);
+		this.map = new TS.AIMap(containers.map, map_url, options);
 		this.map.observe('ready', this.onMapReady.bindAsEventListener(this));
 
 		// other shit
@@ -102,8 +102,7 @@ TS.AIPlayback = Class.create(TS.Playback, {
 	onGameDescriptionLoaded: function (request)
 	{
 		// parse the answer
-		this.gameDescription = request.responseJSON.game.replay;
-
+		this.gameDescription = (request.responseJSON || JSON.parse(request.responseText)).game.replay;
 		this.ready.self = true;
 
 		// draw the first turn (setup)

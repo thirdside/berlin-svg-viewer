@@ -39,14 +39,15 @@
               "turns": "turns"
             },
 
-            map_path = "data/2.map",
-            game_path = "data/1";
+            map_path = "./data/map.json",
+            game_path = "./data/game.json";
 
             document.observe("dom:loaded", function() {
               new TS.AIPlayback(
                 containers,
                 map_path,
-                game_path
+                game_path,
+                { local: true }
               );
             });
         </script>

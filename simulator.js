@@ -32,7 +32,7 @@ TS.AIMap = Class.create(TS, {
 	 */
 	onConfigLoaded: function (request)
 	{
-		this.config       = request.responseJSON.map.representation;
+    this.config = (request.responseJSON || JSON.parse(request.responseText)).map.representation;
 		this.imagesToLoad = this.config.images.size();
 
 		if (!this.config) {alert("Map Error"); return};
@@ -58,7 +58,7 @@ TS.AIMap = Class.create(TS, {
 		this.config.images.each(function(data) {
 			var img = new Image();
 			img.onload = this.onImageLoaded.bindAsEventListener(this, data.name);
-			img.src = data.src;
+			img.src = (this.options.local ? "." : "") + data.src;
 		}, this);
 	},
 
