@@ -6,11 +6,8 @@ This viewer is used to view games on [Berlin](http://www.berlin-ai.com).
 How to use
 ----------
 
-This repository includes a test `index.html` that loads a local **map** and **game** in `.\data`.
+This repository includes a test `index.html` that can load a game from Berlin via an input text box.
 
-So to view a game with this viewer, you must have those files hosted on your server.
+To obtain the game, the test `index.html` send a JSONP `GET request` at `http://berlin-ai.com/games/id.json` where `id` is the id of the game.
 
-To obtain those files, you can send a `GET request` at:
-
-* map: `http://berlin-ai.com/maps/id.json` where `id` is the id of the map.
-* game: `http://berlin-ai.com/games/id.json` where `id` is the id of the game.
+Do not try load more than one game per page load because it is not currently supported.

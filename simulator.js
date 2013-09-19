@@ -1,12 +1,11 @@
 TS.AIMap = Class.create(TS, {
-  initialize: function ($super, container, config_url, options) {
+  initialize: function ($super, container, map_data, options) {
     $super();
 
     this.options = Object.extend({
       engine: "SVG"
     }, options || {});
 
-    this.config_url = config_url;
     this.container = $(container);
     this.layers = {};
     this.graphics = {};
@@ -16,25 +15,8 @@ TS.AIMap = Class.create(TS, {
       height: this.container.getHeight()
     };
 
-    // load config
-    new Ajax.Request(config_url, {
-      method: 'get',
-      onComplete: this.onConfigLoaded.bindAsEventListener(this)
-    });
-  },
-
-  /*
-   * Callback after the visualizer's config is loaded
-   */
-  onConfigLoaded: function (request) {
-    this.config = (request.responseJSON || JSON.parse(request.responseText)).map.representation;
+    this.config = map_data.representation;
     this.imagesToLoad = this.config.images.size();
-
-    if (!this.config) {
-      alert("Map Error");
-      return
-    };
-
     this.nodeGraph = new TS.NodeGraph(this.config);
 
     // Create a canvas element for each display layer

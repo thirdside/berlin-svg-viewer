@@ -1,8 +1,7 @@
 TS.Playback = Class.create(TS, {
-  initialize: function ($super, containers, map_url, history_url) {
+  initialize: function ($super, containers, game_data) {
     this.containers = containers;
-    this.map_url = map_url;
-    this.history_url = history_url;
+    this.game_data = game_data;
 
     // info table row name template
     this.playerInfoName = 'info_player_#{id}';
@@ -56,20 +55,17 @@ TS.Playback = Class.create(TS, {
 })
 
 TS.AIPlayback = Class.create(TS.Playback, {
-  initialize: function ($super, containers, map_url, history_url, options) {
-    $super(containers, map_url, history_url);
+  initialize: function ($super, containers, game_data, options) {
+    $super(containers, game_data);
 
     // create the visualizer
-    this.map = new TS.AIMap(containers.map, map_url, options);
+    this.map = new TS.AIMap(containers.map, game_data.map, options);
     this.map.observe('ready', this.onMapReady.bindAsEventListener(this));
 
     // other shit
     this.turnNumber = 0;
     this.forward = true;
-    this.ready = {
-      map: false,
-      self: false
-    };
+    this.ready = false;
 
     // create the buttons
     this.buttons = ["rewind", "back", "play", "pause", "next", "end"];
@@ -91,31 +87,6 @@ TS.AIPlayback = Class.create(TS.Playback, {
     this.enableControls();
     this.playbackDescription = null;
     this.stepTime = 500;
-  },
-
-  /*
-   * Called when the game description is fetched from the server
-   */
-  onGameDescriptionLoaded: function (request) {
-    // parse the answer
-    this.gameDescription = (request.responseJSON || JSON.parse(request.responseText)).game.replay;
-    this.ready.self = true;
-
-    // draw the first turn (setup)
-    if (this.isReady()) {
-      // create the playback description
-      this.playbackDescription = new TS.PlaybackDescription(
-        this.map.config,
-        this.map.nodeGraph,
-        this.gameDescription,
-        this.map.layers['background'],
-        this.map.graphics,
-        this.stepTime);
-      this.playbackDescription.initializeTurns();
-
-      this.enableControls();
-      this.drawCurrentTurn();
-    }
   },
 
   /*
@@ -246,13 +217,25 @@ TS.AIPlayback = Class.create(TS.Playback, {
    * i.e. the config was succesfully loaded
    */
   onMapReady: function () {
-    this.ready.map = true;
+    this.ready = true;
 
-    // request the game description
-    new Ajax.Request(this.history_url, {
-      method: 'get',
-      onComplete: this.onGameDescriptionLoaded.bindAsEventListener(this)
-    });
+    this.gameDescription = this.game_data.replay;
+
+    // draw the first turn (setup)
+    // create the playback description
+    console.log(this.map);
+    this.playbackDescription = new TS.PlaybackDescription(
+      this.map.config,
+      this.map.nodeGraph,
+      this.gameDescription,
+      this.map.layers['background'],
+      this.map.graphics,
+      this.stepTime
+    );
+
+    this.playbackDescription.initializeTurns();
+    this.enableControls();
+    this.drawCurrentTurn();
   },
 
   /*
@@ -260,7 +243,7 @@ TS.AIPlayback = Class.create(TS.Playback, {
    * i.e. the visualizer and the playback are ready.
    */
   isReady: function () {
-    return $H(this.ready).all();
+    return this.ready;
   },
 
   /*
@@ -315,33 +298,3 @@ TS.AIPlayback = Class.create(TS.Playback, {
   }
 });
 
-TS.FlashPlayback = Class.create(TS.Playback, {
-  initialize: function ($super, containers, map_url, history_url) {
-    $super(containers, map_url, history_url);
-    this.setupFlash();
-  },
-
-  setupFlash: function () {
-    // For version detection, set to min. required Flash Player version, or 0 (or 0.0.0), for no version detection.
-    var swfVersionStr = "10.2.0";
-    // To use express install, set to playerProductInstall.swf, otherwise the empty string.
-    var flashvars = {
-      map: this.map_url,
-      history: this.history_url
-    };
-    var params = {};
-    params.quality = "high";
-    params.bgcolor = "#202020";
-    params.allowscriptaccess = "always";
-    params.allowfullscreen = "true";
-    var attributes = {};
-    attributes.id = "berlin-client";
-    attributes.name = "berlin-client";
-    attributes.align = "middle";
-    swfobject.embedSWF(
-      "/berlin-client.swf", this.containers.flash,
-      "960", "500",
-      swfVersionStr, null,
-      flashvars, params, attributes);
-  },
-})

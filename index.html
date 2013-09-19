@@ -3,6 +3,7 @@
 <html>
     <head>
         <script type="text/javascript" src="prototype.js"></script>
+        <script type="text/javascript" src="jsonp.js"></script>
         <script type="text/javascript" src="thirdside.js"></script>
         <script type="text/javascript" src="raphael/raphael.js"></script>
         <script type="text/javascript" src="raphael/g.raphael.js"></script>
@@ -18,6 +19,11 @@
         <script type="text/javascript" src="simulator.js"></script>
     </head>
     <body>
+        <div>
+          <span>Game url:</span>
+          <input type="text" id="game_url" style="width: 500px"></input>
+          <button id="load_game">Go</button>
+        </div>
         <div id="player_list">
             <div id="info_player_0">
               <div class="color" style="width: 30px; height: 30px;"></div>
@@ -50,18 +56,20 @@
               "player_list": "player-list",
               "progress_bar": "progress_bar",
               "turns": "turns"
-            },
-
-            map_path = "./data/map.json",
-            game_path = "./data/game.json";
+            };
 
             document.observe("dom:loaded", function() {
-              new TS.AIPlayback(
-                containers,
-                map_path,
-                game_path,
-                { local: true }
-              );
+              $('load_game').on('click', function(event) {
+                new Ajax.JSONRequest($('game_url').value, {
+                  onComplete: function(response) {
+                    new TS.AIPlayback(
+                      containers,
+                      response.responseJSON.game,
+                      { local: true }
+                    );
+                  }
+                });
+              });
             });
         </script>
     </body>
