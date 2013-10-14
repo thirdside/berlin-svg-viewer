@@ -302,9 +302,12 @@ TS.SVG = Class.create(TS.Drawable, {
   },
 
   _createDebugNodeObject: function (object, attrs) {
-    var text = this.raphael.text(object.position.x, object.position.y + 30, object.node);
+    var set = this.raphael.set();
 
-    text.attr({
+    // Node id
+    var nodeIdText = this.raphael.text(object.position.x, object.position.y + 30, object.node.value);
+
+    nodeIdText.attr({
       'font': object.font,
       'font-weight': object.fontWeight,
       'font-size': object.fontSize,
@@ -312,8 +315,76 @@ TS.SVG = Class.create(TS.Drawable, {
       'opacity': object.opacity
     });
 
-    var set = this.raphael.set();
-    set.push(text);
+    var nodeIdImage = this.raphael.image(
+      object.node.img.src,
+      object.position.x - object.node.img.width / 2,
+      object.position.y + 15,
+      object.node.img.width,
+      object.node.img.height
+    );
+
+    nodeIdImage.attr({
+      opacity: object.opacity
+    })
+
+    set.push(nodeIdImage);
+    set.push(nodeIdText.toFront());
+
+    // Number of soldiers
+    if (object.number_of_soldiers.value > 0) {
+      var numberOfSoldiersText = this.raphael.text(object.position.x - 25, object.position.y + 30, object.number_of_soldiers.value);
+
+      numberOfSoldiersText.attr({
+        'font': object.font,
+        'font-weight': object.fontWeight,
+        'font-size': object.fontSize,
+        'fill': object.fill,
+        'opacity': object.opacity
+      });
+
+      var numberOfSoldiersImage = this.raphael.image(
+        object.number_of_soldiers.img.src,
+        object.position.x - 25 - object.node.img.width / 2,
+        object.position.y + 15,
+        object.node.img.width,
+        object.node.img.height
+      );
+
+      numberOfSoldiersImage.attr({
+        opacity: object.opacity
+      })
+
+      set.push(numberOfSoldiersImage);
+      set.push(numberOfSoldiersText.toFront());
+    }
+
+    // Victory points
+    if (object.victory_points.value > 0) {
+      var victoryPointsText = this.raphael.text(object.position.x + 25, object.position.y + 30, object.victory_points.value);
+
+      victoryPointsText.attr({
+        'font': object.font,
+        'font-weight': object.fontWeight,
+        'font-size': object.fontSize,
+        'fill': object.fill,
+        'opacity': object.opacity
+      });
+
+      var victoryPointsImage = this.raphael.image(
+        object.victory_points.img.src,
+        object.position.x + 25 - object.node.img.width / 2,
+        object.position.y + 15,
+        object.node.img.width,
+        object.node.img.height
+      );
+
+      victoryPointsImage.attr({
+        opacity: object.opacity
+      })
+
+      set.push(victoryPointsImage);
+      set.push(victoryPointsText.toFront());
+    }
 
     return set;
   },

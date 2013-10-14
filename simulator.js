@@ -16,7 +16,6 @@ TS.AIMap = Class.create(TS, {
     };
 
     this.config = map_data.representation;
-    this.imagesToLoad = this.config.images.size();
     this.nodeGraph = new TS.NodeGraph(this.config);
 
     // Create a canvas element for each display layer
@@ -35,9 +34,15 @@ TS.AIMap = Class.create(TS, {
       );
     }, this);
 
-
     // Preload all the images
-    this.config.images.each(function (data) {
+    this.imagesToLoad = this.config.images.size() + 3;
+    to_load = this.config.images.concat([
+      { name: 'node_id', src: '/assets/simulator/node_id.png' },
+      { name: 'number_of_soldiers', src: '/assets/simulator/number_of_soldiers.png' },
+      { name: 'victory_points', src: '/assets/simulator/victory_points.png' }
+    ]);
+
+    to_load.each(function (data) {
       var img = new Image();
       img.onload = this.onImageLoaded.bindAsEventListener(this, data.name);
       img.src = (this.options.local ? "." : "") + data.src;

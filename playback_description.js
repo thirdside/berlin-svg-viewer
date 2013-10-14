@@ -924,15 +924,19 @@ TS.PlaybackDescription = Class.create(TS, {
    * Create a debug node object
    */
   _createDebugNodeObject: function (id, node) {
+    node_type = $A(this.mapDescription.types).find(function(type) { return type.name == node.type; });
+
     var object = {
       'id': id,
       'type': 'debug_node',
-      'node': node.id,
+      'node': { value: node.id, img: this.graphics.node_id },
+      'number_of_soldiers': { value: node_type.soldiers_per_turn, img: this.graphics.number_of_soldiers },
+      'victory_points': { value: node_type.points, img: this.graphics.victory_points },
       'position': this._getNodePosition(node.id),
       'opacity': 0.5,
       'font': 'Symbol',
       'fontWeight': 'bold',
-      'fontSize': 20,
+      'fontSize': 14,
       'fill': '#FFF'
     };
 
